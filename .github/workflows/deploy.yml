@@ -25,8 +25,8 @@ jobs:
     - name: Build project
       shell: pwsh
       run: |
-        $msbuild = "${env:VSINSTALLDIR}MSBuild\Current\Bin\MSBuild.exe"
-        & $msbuild "src\DeerTier.Web\DeerTier.Web.csproj" /p:Configuration=Release
+        $msbuildPath = "${env:VSINSTALLDIR}MSBuild\Current\Bin\MSBuild.exe"
+        Start-Process -FilePath $msbuildPath -ArgumentList 'src\DeerTier.Web\DeerTier.Web.csproj /p:Configuration=Release' -Wait -NoNewWindow
 
     - name: Deploy via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
