@@ -1,37 +1,43 @@
 name: Deploy to SmarterASP.NET
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Manual trigger
 
 jobs:
   build-and-deploy:
-    runs-on: windows-2022  # includes Visual Studio 2022 with MSBuild
+    runs-on: windows-2022  # Includes Visual Studio 2022
 
     env:
       DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      # 1. Checkout the repo
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Inject production connection string
-      run: |
-        $configPath = "src\DeerTier.Web\Config\ConnectionStrings.config"
-        [xml]$xml = Get-Content $configPath
-        $node = $xml.connectionStrings.add | Where-Object { $_.name -eq "Database" }
-        $node.connectionString = "${{ secrets.DB_CONNECTION_STRING }}"
-        $xml.Save($configPath)
+      # 2. Setup MSBuild
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
 
-    - name: Build project
-      shell: pwsh
-      run: |
-        $msbuildPath = "${env:VSINSTALLDIR}MSBuild\Current\Bin\MSBuild.exe"
-        Start-Process -FilePath $msbuildPath -ArgumentList 'src\DeerTier.Web\DeerTier.Web.csproj /p:Configuration=Release' -Wait -NoNewWindow
+      # 3. Inject production connection string
+      - name: Inject production connection string
+        shell: pwsh
+        run: |
+          $configPath = "src\DeerTier.Web\Config\ConnectionStrings.config"
+          [xml]$xml = Get-Content $configPath
+          $node = $xml.connectionStrings.add | Where-Object { $_.name -eq "Database" }
+          $node.connectionString = "${{ secrets.DB_CONNECTION_STRING }}"
+          $xml.Save($configPath)
 
-    - name: Deploy via FTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: src/DeerTier.Web/bin/Release/
+      # 4. Build the project
+      - name: Build project
+        run: msbuild "src\DeerTier.Web\DeerTier.Web.csproj" /p:Configuration=Release
+
+      # 5. Deploy via FTP
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: src/DeerTier.Web/bin/Release/
