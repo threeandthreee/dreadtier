@@ -23,7 +23,10 @@ jobs:
         $xml.Save($configPath)
 
     - name: Build project
-      run: msbuild "src/DeerTier.Web/DeerTier.Web.csproj" /p:Configuration=Release
+      shell: pwsh
+      run: |
+        $msbuild = "${env:VSINSTALLDIR}MSBuild\Current\Bin\MSBuild.exe"
+        & $msbuild "src\DeerTier.Web\DeerTier.Web.csproj" /p:Configuration=Release
 
     - name: Deploy via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
