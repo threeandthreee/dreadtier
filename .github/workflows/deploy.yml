@@ -1,41 +1,86 @@
 name: Deploy to SmarterASP.NET
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:      
 
 jobs:
   build-and-deploy:
-    runs-on: windows-2022
+    runs-on: windows-latest
 
     env:
       DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
 
-      - name: Restore NuGet packages
-        run: nuget restore "src\DeerTier.Web.sln"
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
 
-      - name: Inject production connection string
-        shell: pwsh
-        run: $configPath="src\DeerTier.Web\Config\ConnectionStrings.config"; [xml]$xml=Get-Content $configPath; $node=$xml.connectionStrings.add | Where-Object { $_.name -eq "Database" }; $node.connectionString="${{ secrets.DB_CONNECTION_STRING }}"; $xml.Save($configPath)
+    - name: Restore NuGet packages
+      run: nuget restore
 
-      - name: Build (Release)
-        run: msbuild "src\DeerTier.Web\DeerTier.Web.csproj" /p:Configuration=Release
+    - name: Inject production connection string
+      shell: pwsh
+      run: $configPath="src\DeerTier.Web\Config\ConnectionStrings.config"; [xml]$xml=Get-Content $configPath; $node=$xml.connectionStrings.add | Where-Object { $_.name -eq "Database" }; $node.connectionString="${{ secrets.DB_CONNECTION_STRING }}"; $xml.Save($configPath)
 
-      - name: Publish to folder
-        run: msbuild "src\DeerTier.Web\DeerTier.Web.csproj" /p:Configuration=Release /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=true /p:publishUrl="${{ github.workspace }}\publish"
+    - name: Build solution
+      run: msbuild /p:Configuration=Release /p:Platform="Any CPU" /p:PublishProfile=FolderProfile /p:PublishUrl=publish/ /p:WebPublishMethod=FileSystem /p:DeployOnBuild=true /p:PublishDefaultTarget=WebPublish
 
-      - name: FTP Deploy to /site1 (clean first)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: publish/
-          server-dir: /site1/
-          dangerous-clean-slate: true
+    - name: Create deployment package
+      shell: powershell
+      run: |
+        # Copy published files to a staging directory
+        $publishPath = "publish"
+        $stagingPath = "staging"
+        
+        if (Test-Path $stagingPath) {
+          Remove-Item $stagingPath -Recurse -Force
+        }
+        
+        New-Item -ItemType Directory -Path $stagingPath
+        
+        # Copy the published website files
+        if (Test-Path $publishPath) {
+          Copy-Item -Path "$publishPath\*" -Destination $stagingPath -Recurse
+        } else {
+          # Fallback: copy from bin and content directories
+          Copy-Item -Path "bin\*" -Destination "$stagingPath\bin\" -Recurse -Force
+          Copy-Item -Path "Content\*" -Destination "$stagingPath\Content\" -Recurse -Force -ErrorAction SilentlyContinue
+          Copy-Item -Path "Scripts\*" -Destination "$stagingPath\Scripts\" -Recurse -Force -ErrorAction SilentlyContinue
+          Copy-Item -Path "Views\*" -Destination "$stagingPath\Views\" -Recurse -Force -ErrorAction SilentlyContinue
+          Copy-Item -Path "*.asax" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
+          Copy-Item -Path "*.config" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
+          Copy-Item -Path "favicon.ico" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
+        }
+        
+        Write-Host "Deployment package created in staging directory"
+
+    - name: Deploy via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./staging/
+        server-dir: ${{ secrets.FTP_SERVER_DIR }}
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/*.tmp
+          **/*.log
+          **/packages/**
+          **/.vs/**
+          **/obj/**
+          **/*.pdb
+
+    - name: Verify deployment
+      shell: powershell
+      run: |
+        Write-Host "Deployment completed successfully!"
+        Write-Host "Application should now be available at your web server."
+        
