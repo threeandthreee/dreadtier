@@ -18,30 +18,19 @@ jobs:
         uses: microsoft/setup-msbuild@v1
 
       - name: Restore NuGet packages
-        run: nuget restore "src/DeerTier.Web.sln"
+        run: nuget restore "src\DeerTier.Web.sln"
 
       - name: Inject production connection string
         shell: pwsh
-        run: |
-          $configPath = "src\DeerTier.Web\Config\ConnectionStrings.config"
-          [xml]$xml = Get-Content $configPath
-          $node = $xml.connectionStrings.add | Where-Object { $_.name -eq "Database" }
-          $node.connectionString = "${{ secrets.DB_CONNECTION_STRING }}"
-          $xml.Save($configPath)
+        run: $configPath="src\DeerTier.Web\Config\ConnectionStrings.config"; [xml]$xml=Get-Content $configPath; $node=$xml.connectionStrings.add | Where-Object { $_.name -eq "Database" }; $node.connectionString="${{ secrets.DB_CONNECTION_STRING }}"; $xml.Save($configPath)
 
-      - name: Build project
+      - name: Build (Release)
         run: msbuild "src\DeerTier.Web\DeerTier.Web.csproj" /p:Configuration=Release
 
-      - name: Publish web project
-        run: |
-          "C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe" `
-            src\DeerTier.Web\DeerTier.Web.csproj `
-            /p:Configuration=Release `
-            /p:WebPublishMethod=FileSystem `
-            /p:DeleteExistingFiles=true `
-            /p:publishUrl=publish
+      - name: Publish to folder
+        run: msbuild "src\DeerTier.Web\DeerTier.Web.csproj" /p:Configuration=Release /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=true /p:publishUrl="${{ github.workspace }}\publish"
 
-      - name: FTP Deploy
+      - name: FTP Deploy to /site1 (clean first)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
