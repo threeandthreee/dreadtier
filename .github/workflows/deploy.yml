@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Restore NuGet packages
-        run: nuget restore "src/DeerTier.Web/DeerTier.Web.sln"
+        run: nuget restore "src/DeerTier.Web.sln"
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
