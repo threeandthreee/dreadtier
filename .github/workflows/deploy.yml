@@ -32,10 +32,18 @@ jobs:
       - name: Build project
         run: msbuild "src\DeerTier.Web\DeerTier.Web.csproj" /p:Configuration=Release
 
-      - name: Deploy via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Publish project
+        run: |
+          dotnet publish src/DeerTier.Web/DeerTier.Web.csproj \
+            -c Release \
+            -o publish
+
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: src/DeerTier.Web/bin/
+          local-dir: publish/
+          server-dir: /site1/
+          dangerous-clean-slate: true
