@@ -40,7 +40,108 @@ jobs:
         }
         
         New-Item -ItemType Directory -Path $stagingPath
+        name: Build and Deploy .NET 4.8 MVC 5
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
+
+    - name: Restore NuGet packages
+      run: nuget restore
+      working-directory: ./src
+
+    - name: Inject production connection string
+      shell: pwsh
+      run: $configPath="src\DeerTier.Web\Config\ConnectionStrings.config"; [xml]$xml=Get-Content $configPath; $node=$xml.connectionStrings.add | Where-Object { $_.name -eq "Database" }; $node.connectionString="${{ secrets.DB_CONNECTION_STRING }}"; $xml.Save($configPath)
+
+    - name: Build solution
+      run: msbuild /p:Configuration=Release /p:Platform="Any CPU"
+      working-directory: ./src
+
+    - name: Create deployment package
+      shell: powershell
+      run: |
+        # Create staging directory
+        $stagingPath = "staging"
+        $webProjectPath = "src\DeerTier.Web"
         
+        if (Test-Path $stagingPath) {
+          Remove-Item $stagingPath -Recurse -Force
+        }
+        
+        New-Item -ItemType Directory -Path $stagingPath -Force
+        
+        # Function to safely copy directory if it exists
+        function Safe-Copy {
+          param($Source, $Destination)
+          if (Test-Path $Source) {
+            $destDir = Split-Path $Destination -Parent
+            if (!(Test-Path $destDir)) {
+              New-Item -ItemType Directory -Path $destDir -Force
+            }
+            Copy-Item -Path $Source -Destination $Destination -Recurse -Force
+            Write-Host "Copied: $Source -> $Destination"
+          } else {
+            Write-Host "Skipped (not found): $Source"
+          }
+        }
+        
+        # Copy the built website files
+        Safe-Copy "$webProjectPath\bin" "$stagingPath\bin"
+        Safe-Copy "$webProjectPath\Content" "$stagingPath\Content"
+        Safe-Copy "$webProjectPath\Scripts" "$stagingPath\Scripts"
+        Safe-Copy "$webProjectPath\Views" "$stagingPath\Views"
+        Safe-Copy "$webProjectPath\App_Data" "$stagingPath\App_Data"
+        Safe-Copy "$webProjectPath\Config" "$stagingPath\Config"
+        
+        # Copy individual files if they exist
+        @("*.asax", "*.config", "favicon.ico") | ForEach-Object {
+          $files = Get-ChildItem "$webProjectPath\$_" -ErrorAction SilentlyContinue
+          foreach ($file in $files) {
+            Copy-Item $file.FullName $stagingPath -Force
+            Write-Host "Copied file: $($file.Name)"
+          }
+        }
+        
+        Write-Host "Deployment package created in staging directory"
+
+    - name: Deploy via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./staging/
+        server-dir: ${{ secrets.FTP_SERVER_DIR }}
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/*.tmp
+          **/*.log
+          **/packages/**
+          **/.vs/**
+          **/obj/**
+          **/*.pdb
+
+    - name: Verify deployment
+      shell: powershell
+      run: |
+        Write-Host "Deployment completed successfully!"
+        Write-Host "Application should now be available at your web server."
         # Copy the built website files directly from the web project
         Copy-Item -Path "src\DeerTier.Web\bin\*" -Destination "$stagingPath\bin\" -Recurse -Force
         Copy-Item -Path "src\DeerTier.Web\Content\*" -Destination "$stagingPath\Content\" -Recurse -Force -ErrorAction SilentlyContinue
