@@ -1,11 +1,11 @@
 name: Deploy to SmarterASP.NET
 
 on:
-  workflow_dispatch:  
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
-    runs-on: windows-2022 
+    runs-on: windows-2022
 
     env:
       DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
@@ -13,12 +13,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
-      - name: Restore NuGet packages
-        run: nuget restore "src/DeerTier.Web.sln"
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
+
+      - name: Restore NuGet packages
+        run: nuget restore "src/DeerTier.Web.sln"
 
       - name: Inject production connection string
         shell: pwsh
