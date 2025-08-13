@@ -1,7 +1,7 @@
-name: Deploy to SmarterASP.NET
+name: Build and Deploy .NET 4.8 MVC 5
 
 on:
-  workflow_dispatch:      
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -21,7 +21,8 @@ jobs:
       uses: NuGet/setup-nuget@v2
 
     - name: Restore NuGet packages
-      run: nuget restore "src\DeerTier.Web.sln"
+      run: nuget restore
+      working-directory: ./src
 
     - name: Inject production connection string
       shell: pwsh
@@ -29,12 +30,13 @@ jobs:
 
     - name: Build solution
       run: msbuild /p:Configuration=Release /p:Platform="Any CPU" /p:PublishProfile=FolderProfile /p:PublishUrl=publish/ /p:WebPublishMethod=FileSystem /p:DeployOnBuild=true /p:PublishDefaultTarget=WebPublish
+      working-directory: ./src
 
     - name: Create deployment package
       shell: powershell
       run: |
         # Copy published files to a staging directory
-        $publishPath = "publish"
+        $publishPath = "src/publish"
         $stagingPath = "staging"
         
         if (Test-Path $stagingPath) {
@@ -47,14 +49,14 @@ jobs:
         if (Test-Path $publishPath) {
           Copy-Item -Path "$publishPath\*" -Destination $stagingPath -Recurse
         } else {
-          # Fallback: copy from bin and content directories
-          Copy-Item -Path "bin\*" -Destination "$stagingPath\bin\" -Recurse -Force
-          Copy-Item -Path "Content\*" -Destination "$stagingPath\Content\" -Recurse -Force -ErrorAction SilentlyContinue
-          Copy-Item -Path "Scripts\*" -Destination "$stagingPath\Scripts\" -Recurse -Force -ErrorAction SilentlyContinue
-          Copy-Item -Path "Views\*" -Destination "$stagingPath\Views\" -Recurse -Force -ErrorAction SilentlyContinue
-          Copy-Item -Path "*.asax" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
-          Copy-Item -Path "*.config" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
-          Copy-Item -Path "favicon.ico" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
+          # Fallback: copy from bin and content directories in src folder
+          Copy-Item -Path "src\bin\*" -Destination "$stagingPath\bin\" -Recurse -Force
+          Copy-Item -Path "src\Content\*" -Destination "$stagingPath\Content\" -Recurse -Force -ErrorAction SilentlyContinue
+          Copy-Item -Path "src\Scripts\*" -Destination "$stagingPath\Scripts\" -Recurse -Force -ErrorAction SilentlyContinue
+          Copy-Item -Path "src\Views\*" -Destination "$stagingPath\Views\" -Recurse -Force -ErrorAction SilentlyContinue
+          Copy-Item -Path "src\*.asax" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
+          Copy-Item -Path "src\*.config" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
+          Copy-Item -Path "src\favicon.ico" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
         }
         
         Write-Host "Deployment package created in staging directory"
