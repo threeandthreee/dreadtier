@@ -21,7 +21,7 @@ jobs:
       uses: NuGet/setup-nuget@v2
 
     - name: Restore NuGet packages
-      run: nuget restore
+      run: nuget restore "src\DeerTier.Web.sln"
 
     - name: Inject production connection string
       shell: pwsh
@@ -83,4 +83,3 @@ jobs:
       run: |
         Write-Host "Deployment completed successfully!"
         Write-Host "Application should now be available at your web server."
-        
