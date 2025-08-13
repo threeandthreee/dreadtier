@@ -29,15 +29,10 @@ jobs:
       run: msbuild /p:Configuration=Release /p:Platform="Any CPU"
       working-directory: ./src
 
-    - name: Publish web application
-      run: msbuild /p:Configuration=Release /p:Platform="Any CPU" /p:PublishUrl=publish/ /p:WebPublishMethod=FileSystem /p:DeployOnBuild=true /p:PublishDefaultTarget=WebPublish /t:WebPublish
-      working-directory: ./src/DeerTier.Web
-
     - name: Create deployment package
       shell: powershell
       run: |
-        # Copy published files to a staging directory
-        $publishPath = "src/DeerTier.Web/publish"
+        # Create staging directory
         $stagingPath = "staging"
         
         if (Test-Path $stagingPath) {
@@ -46,19 +41,16 @@ jobs:
         
         New-Item -ItemType Directory -Path $stagingPath
         
-        # Copy the published website files
-        if (Test-Path $publishPath) {
-          Copy-Item -Path "$publishPath\*" -Destination $stagingPath -Recurse
-        } else {
-          # Fallback: copy from bin and content directories in src folder
-          Copy-Item -Path "src\DeerTier.Web\bin\*" -Destination "$stagingPath\bin\" -Recurse -Force
-          Copy-Item -Path "src\DeerTier.Web\Content\*" -Destination "$stagingPath\Content\" -Recurse -Force -ErrorAction SilentlyContinue
-          Copy-Item -Path "src\DeerTier.Web\Scripts\*" -Destination "$stagingPath\Scripts\" -Recurse -Force -ErrorAction SilentlyContinue
-          Copy-Item -Path "src\DeerTier.Web\Views\*" -Destination "$stagingPath\Views\" -Recurse -Force -ErrorAction SilentlyContinue
-          Copy-Item -Path "src\DeerTier.Web\*.asax" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
-          Copy-Item -Path "src\DeerTier.Web\*.config" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
-          Copy-Item -Path "src\DeerTier.Web\favicon.ico" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
-        }
+        # Copy the built website files directly from the web project
+        Copy-Item -Path "src\DeerTier.Web\bin\*" -Destination "$stagingPath\bin\" -Recurse -Force
+        Copy-Item -Path "src\DeerTier.Web\Content\*" -Destination "$stagingPath\Content\" -Recurse -Force -ErrorAction SilentlyContinue
+        Copy-Item -Path "src\DeerTier.Web\Scripts\*" -Destination "$stagingPath\Scripts\" -Recurse -Force -ErrorAction SilentlyContinue
+        Copy-Item -Path "src\DeerTier.Web\Views\*" -Destination "$stagingPath\Views\" -Recurse -Force -ErrorAction SilentlyContinue
+        Copy-Item -Path "src\DeerTier.Web\App_Data\*" -Destination "$stagingPath\App_Data\" -Recurse -Force -ErrorAction SilentlyContinue
+        Copy-Item -Path "src\DeerTier.Web\*.asax" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
+        Copy-Item -Path "src\DeerTier.Web\*.config" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
+        Copy-Item -Path "src\DeerTier.Web\favicon.ico" -Destination $stagingPath -Force -ErrorAction SilentlyContinue
+        Copy-Item -Path "src\DeerTier.Web\Config\*" -Destination "$stagingPath\Config\" -Recurse -Force -ErrorAction SilentlyContinue
         
         Write-Host "Deployment package created in staging directory"
 
