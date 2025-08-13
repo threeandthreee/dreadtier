@@ -32,11 +32,14 @@ jobs:
       - name: Build project
         run: msbuild "src\DeerTier.Web\DeerTier.Web.csproj" /p:Configuration=Release
 
-      - name: Publish project
+      - name: Publish web project
         run: |
-          dotnet publish src/DeerTier.Web/DeerTier.Web.csproj \
-            -c Release \
-            -o publish
+          "C:\Program Files (x86)\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe" `
+            src\DeerTier.Web\DeerTier.Web.csproj `
+            /p:Configuration=Release `
+            /p:WebPublishMethod=FileSystem `
+            /p:DeleteExistingFiles=true `
+            /p:publishUrl=publish
 
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
