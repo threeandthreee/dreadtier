@@ -1,25 +1,25 @@
 name: Deploy to SmarterASP.NET
 
 on:
-  workflow_dispatch:  # Manual trigger
+  workflow_dispatch:  
 
 jobs:
   build-and-deploy:
-    runs-on: windows-2022  # Includes Visual Studio 2022
+    runs-on: windows-2022 
 
     env:
       DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
 
     steps:
-      # 1. Checkout the repo
       - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Restore NuGet packages
+        run: nuget restore "src/DeerTier.Web/DeerTier.Web.sln"
 
-      # 2. Setup MSBuild
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
 
-      # 3. Inject production connection string
       - name: Inject production connection string
         shell: pwsh
         run: |
@@ -29,11 +29,9 @@ jobs:
           $node.connectionString = "${{ secrets.DB_CONNECTION_STRING }}"
           $xml.Save($configPath)
 
-      # 4. Build the project
       - name: Build project
         run: msbuild "src\DeerTier.Web\DeerTier.Web.csproj" /p:Configuration=Release
 
-      # 5. Deploy via FTP
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
