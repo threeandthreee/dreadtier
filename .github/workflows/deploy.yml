@@ -7,9 +7,6 @@ jobs:
   build-and-deploy:
     runs-on: windows-latest
 
-    env:
-      DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -29,7 +26,11 @@ jobs:
       run: $configPath="src\DeerTier.Web\Config\ConnectionStrings.config"; [xml]$xml=Get-Content $configPath; $node=$xml.connectionStrings.add | Where-Object { $_.name -eq "Database" }; $node.connectionString="${{ secrets.DB_CONNECTION_STRING }}"; $xml.Save($configPath)
 
     - name: Build solution
-      run: msbuild /p:Configuration=Release /p:Platform="Any CPU" /p:PublishProfile=FolderProfile /p:PublishUrl=publish/ /p:WebPublishMethod=FileSystem /p:DeployOnBuild=true /p:PublishDefaultTarget=WebPublish
+      run: msbuild /p:Configuration=Release /p:Platform="Any CPU"
+      working-directory: ./src
+
+    - name: Publish web application
+      run: msbuild DeerTier.Web/DeerTier.Web.csproj /p:Configuration=Release /p:Platform="Any CPU" /p:PublishUrl=../publish/ /p:WebPublishMethod=FileSystem /p:DeployOnBuild=true /p:PublishDefaultTarget=WebPublish
       working-directory: ./src
 
     - name: Create deployment package
