@@ -1,0 +1,34 @@
+name: Deploy to SmarterASP.NET
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-2022  # includes Visual Studio 2022 with MSBuild
+
+    env:
+      DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Inject production connection string
+      run: |
+        $configPath = "src\DeerTier.Web\Config\ConnectionStrings.config"
+        [xml]$xml = Get-Content $configPath
+        $node = $xml.connectionStrings.add | Where-Object { $_.name -eq "Database" }
+        $node.connectionString = "${{ secrets.DB_CONNECTION_STRING }}"
+        $xml.Save($configPath)
+
+    - name: Build project
+      run: msbuild "src/DeerTier.Web/DeerTier.Web.csproj" /p:Configuration=Release
+
+    - name: Deploy via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: src/DeerTier.Web/bin/Release/
