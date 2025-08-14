@@ -6,12 +6,14 @@
 
 <div id="mainPageContent">
     <div class="title">
-        <h1>Welcome, Super Metroid Speedrunners!</h1>
+        <h1>Welcome, Metroid Dread Speedrunners!</h1>
     </div>
 
+    @*
     <div class="japaneseTitle">
         ようこそ、日本のスーパーメトロイドスピードラナーズ!
     </div>
+    *@
 
     @if (MvcApplication.IsPreviewSite)
     {
@@ -24,11 +26,13 @@
         </div>
     }
 
+    @*
     <div class="wikiContent">
         <!-- START WIKI CONTENT -->
         @Html.Raw(Model.EmbeddedHtmlContent)
         <!-- END WIKI CONTENT -->
     </div>
+    *@
 
     @* NO POLLS RIGHT NOW
     <div class="mainPageSection pollsSection">
@@ -56,17 +60,31 @@
 
         <div class="newsPost">
             <ul class="newsMeta">
-                <li class="newsDate">No recent news.</li>
+                <li class="newsDate">August 13, 2025</li>
+                <li class="newsAuthor">threeandthree</li>
             </ul>
+            <div class="newsBody">
+                <p>
+                    Hello, I forked deertier. I'm not super comfortable in .NET but we'll see how it goes. I'll start hanging around the discord more to catch feedback.
+                </p>
+                <p>
+                    I just set up the most played categories for now, I can set up more later if desired. I've also set up a hard turbo split on each category.
+                </p>
+                <p>
+                    Compared to SRC, there's some notable data I'm not capturing: IGT, platform, copy, version, difficulty. By doing it this way I was able to get away with
+                    almost no modifications, and to be honest that data doesn't seem worth the effort to do otherwise. Regarding difficulty, I figured I could just set up
+                    dread mode subcategories at some point.
+                </p>
+            </div>
         </div>
 
-        <a href="/News">Past News</a>
+        @*<a href="/News">Past News</a>*@
     </div>
 
     <div class="mainPageSection">
         <h2 class="title">Moderators</h2>
         <br />
 
-        Your moderators are <b>@Model.FormattedModerators</b>. If you have any questions about the times you or anyone else has submitted, please feel free to contact any of them in the #supermetroid channel on our <a href="@Model.DiscordUrl" target="_blank" class="link">Discord</a> server.
+        Your moderators are <b>@Model.FormattedModerators</b>. If you have any questions about the times you or anyone else has submitted, please feel free to contact any of them on our <a href="@Model.DiscordUrl" target="_blank" class="link">Discord</a> server.
     </div>
 </div>
