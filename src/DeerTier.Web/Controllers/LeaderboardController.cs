@@ -175,7 +175,7 @@ namespace DeerTier.Web.Controllers
         
         [HttpPost]
         [Authorize]
-        public ActionResult SubmitTime(string categoryUrlName, string gameTime, string escapeGameTime, string realTime, string videoLink, string comment, string username)
+        public ActionResult SubmitTime(string categoryUrlName, string gameTime, string escapeGameTime, string realTime, string videoLink, string comment, int platform, int copy, string username)
         {
             var category = CategoryService.GetCategoryByUrlName(categoryUrlName);
 
@@ -206,7 +206,7 @@ namespace DeerTier.Web.Controllers
                 username = Username;
             }
 
-            var record = RecordUtil.CreateRecord(category, username, gameTime, escapeGameTime, realTime, videoLink, comment, UserId);
+            var record = RecordUtil.CreateRecord(category, username, gameTime, escapeGameTime, realTime, videoLink, comment, platform, copy, UserId);
             if (record == null)
             {
                 return GetSubmitTimeView(category, "Invalid time");
@@ -214,7 +214,7 @@ namespace DeerTier.Web.Controllers
             
             _leaderboardService.AddRecord(UserContext, record, isModeratorAction);
 
-            _logger.Debug($"Record submitted: [{categoryUrlName}], [{gameTime}], [{escapeGameTime}], [{realTime}], [{videoLink}], [{comment}]");
+            _logger.Debug($"Record submitted: [{categoryUrlName}], [{gameTime}], [{escapeGameTime}], [{realTime}], [{videoLink}], [{comment}], [{platform}], [{copy}]");
 
             var viewModel = CreateViewModel<PageViewModel>();
             return View("SubmitSuccess", viewModel);
