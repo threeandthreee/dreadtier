@@ -81,13 +81,13 @@ td.videoLink a:hover
 
 td.videoLink a:hover i
 {
-    background: #8B54DE;
+    background: #DE5454;
     border-radius: 5px;
 }
 
 td.videoLink a:hover i.fa-twitch
 {
-    background: #6441a4;
+    background: #A44141;
 }
 
 td.videoLink a:hover i.fa-youtube-play
@@ -102,7 +102,7 @@ tbody tr.bronze { color: #FFAF3D; /*bronze*/ }
 
 tr:hover
 {
-    background-color: #301D4D !important;
+    background-color: #4D1D1D !important;
     color: White;
 }
 
@@ -111,7 +111,7 @@ th
     font-weight: bold;
     color: #EEEFF7;
     text-align: center;
-    background-color: #5A3791;
+    background-color: #913737;
     white-space: nowrap;
     padding: 2px 5px;
     height: 22px;
@@ -129,7 +129,7 @@ th.sorting_desc::after
 {
     font-size: 10px;
     vertical-align: middle;
-    color: #a076e0;
+    color: #e07676;
 }
 
 th.sorting_asc::after
@@ -146,7 +146,7 @@ th.sorting:hover,
 th.sorting_asc:hover,
 th.sorting_desc:hover
 {
-    background-color: #824FD1;
+    background-color: #D14F4F;
 }
 
 td
@@ -165,7 +165,7 @@ a, a:visited
 
 a:hover
 {
-    color: #8B54DE;
+    color: #DE5454;
     text-decoration: underline;
 }
 
@@ -173,7 +173,7 @@ a:hover
 {
     text-shadow: 0px 0px 5px Red;
     text-decoration: none;
-    color: #8B54DE;
+    color: #DE5454;
 }
 
 #previewSite
@@ -219,6 +219,7 @@ a:hover
 {
     color: #EEEFF7;
     background-image:url('../Images/subtle_carbon2.png');
+    filter: hue-rotate(90deg);
     height: 120px;
 }
 
@@ -263,7 +264,7 @@ a:hover
     padding: 10px;
     /*float: left;*/
     color: #EEEFF7;
-    background-color: RGBA(91, 55, 145, 0.4);
+    background-color: RGBA(145, 55, 55, 0.4);
 }
 
 .navSection
@@ -282,7 +283,7 @@ a:hover
 
 .navSectionExpander:hover 
 {
-    color: #8B54DE;
+    color: #DE5454;
 }
 
     .navSectionExpander_Collapsed
@@ -326,8 +327,8 @@ a:hover
 .navSectionContent a 
 {
     display: block;
-    border: 1px solid #5A3791;
-    background-color: #201333;
+    border: 1px solid #913737;
+    background-color: #331313;
     padding: 5px 0px;
     margin-bottom: 5px;   
 }
@@ -335,14 +336,14 @@ a:hover
 .navSectionContent a:hover
 {
     color: White;
-    background-color: #5B3791;
+    background-color: #913737;
     text-decoration: none;
 }
 
 .navExternalLinkSection 
 {
     text-align: center;
-    border-top: 1px solid #5A3791;
+    border-top: 1px solid #913737;
     margin-top: 10px;
     padding-top: 10px;
 }
@@ -393,7 +394,7 @@ a:hover
 {
     font-size: 85%;
     padding-left: 5px;
-    color: #8B54DE;
+    color: #DE5454;
 }
 
 #footer
@@ -579,12 +580,12 @@ textarea
 {
     border-width: 1px 0px 0px 0px;
     border-top: 1px solid #aa97c9;
-    background: #331f52;
-    background: -webkit-gradient(linear, left top, left bottom, from(#8b54de), to(#331f52));
-    background: -webkit-linear-gradient(top, #8b54de, #331f52);
-    background: -moz-linear-gradient(top, #8b54de, #331f52);
-    background: -ms-linear-gradient(top, #8b54de, #331f52);
-    background: -o-linear-gradient(top, #8b54de, #331f52);
+    background: #521f1f;
+    background: -webkit-gradient(linear, left top, left bottom, from(#DE5454), to(#521f1f));
+    background: -webkit-linear-gradient(top, #DE5454, #521f1f);
+    background: -moz-linear-gradient(top, #DE5454, #521f1f);
+    background: -ms-linear-gradient(top, #DE5454, #521f1f);
+    background: -o-linear-gradient(top, #DE5454, #521f1f);
     padding: 6px 12px;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
@@ -603,8 +604,8 @@ textarea
 
 .genericButton:hover
 {
-    border-top-color: #331f52;
-    background: #331f52;
+    border-top-color: #521f1f;
+    background: #521f1f;
     color: #ccc;
     cursor: pointer;
     text-decoration: none;
@@ -614,8 +615,8 @@ textarea
 {
     position:relative;
 	top:1px;
-	border-top-color: #201333;
-    background: #201333;
+	border-top-color: #331313;
+    background: #331313;
 }
 
 .logOutButton
@@ -634,7 +635,7 @@ textarea
 
 .logOutButton:hover
 {
-    color: #8B54DE;
+    color: #DE5454;
     text-decoration: underline;
 }
 
@@ -714,7 +715,7 @@ textarea
 
 .pollsSection a
 {
-    color: #8B54DE;
+    color: #DE5454;
 }
 
 .pollsDescription
@@ -759,7 +760,7 @@ textarea
 {
     width: 670px;
     margin: 0 auto;
-    background-color: #331F51;
+    background-color: #511F1F;
     padding: 10px 35px 10px 50px;
     border-radius: 10px;
     color: Silver;
@@ -785,7 +786,7 @@ textarea
 
 .deerTierFont
 {
-    color: #8C55DE;
+    color: #DE5555;
     text-shadow: 2px 2px 2px black;
 }
 
@@ -827,7 +828,7 @@ textarea
 
 .siblingCategories ol
 {
-    border-bottom: 1px solid #5B3791;
+    border-bottom: 1px solid #913737;
 }
 
 .siblingCategories ol li
@@ -839,7 +840,7 @@ textarea
 {
     display: inline-block;
     padding: 3px 13px;
-    background: #201333;
+    background: #331313;
     font-weight: bold;
 }
 
@@ -847,7 +848,7 @@ textarea
 .siblingCategories ol li a:hover
 {
     color: White;
-    background-color: #5B3791;
+    background-color: #913737;
     text-decoration: none;
 }
 
@@ -857,7 +858,7 @@ textarea
     height: 100%;
     margin: 0 auto;
     margin-top: 15px;
-    border: 1px solid #331F52;
+    border: 1px solid #521f1f;
 }
 
 #xmlBlurb
@@ -877,7 +878,7 @@ textarea
 
 #xmlBlurb a:hover
 {
-    color: #8B54DE;
+    color: #DE5454;
 }
 
 .newsPage h2
@@ -888,7 +889,7 @@ textarea
 .newsPost
 {
     padding-bottom: 15px;
-    border-bottom: 1px solid #331f52;
+    border-bottom: 1px solid #521f1f;
 }
 
 .newsMeta
@@ -915,7 +916,7 @@ textarea
 
 .newsBody a
 {
-    color: #8B54DE;
+    color: #DE5454;
 }
 
 .newsBody p
