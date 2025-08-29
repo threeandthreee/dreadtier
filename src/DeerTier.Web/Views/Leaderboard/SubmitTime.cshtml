@@ -38,6 +38,18 @@
             Comment:<br />
             <input type="text" class="commentTextField" name="comment" maxlength="100" /><br />
 
+            Platform:<br />
+            <select class="platformSelect">
+                <option value=1>Switch</option>
+                <option value=2 selected>Switch 2</option>
+            </select><br />
+
+            Copy:<br />
+            <select class="copySelect">
+                <option value=1>Physical</option>
+                <option value=2 selected>Digital</option>
+            </select><br />
+
             @if (Model.IsModerator)
             {
                 @:Submit time as another user (enter username)<br />

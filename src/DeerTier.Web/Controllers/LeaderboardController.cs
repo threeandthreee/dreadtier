@@ -115,6 +115,8 @@ namespace DeerTier.Web.Controllers
                 RealTimeSeconds = record.RealTimeSeconds,
                 GameTimeSeconds = record.GameTimeSeconds,
                 Comment = record.Comment,
+                Platform = record.Platform,
+                Copy = record.Copy,
                 VideoURL = record.VideoURL,
                 CeresTime = record.CeresTime,
                 DateSubmitted = record.DateSubmitted,

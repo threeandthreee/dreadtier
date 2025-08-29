@@ -18,6 +18,8 @@ namespace DeerTier.Web.Objects
         public int GameTimeSeconds { get; set; }
         public string GameTimeString { get; set; }
         public string Comment { get; set; }
+        public int Platform { get; set; }
+        public int Copy { get; set; }
         public string VideoURL { get; set; }
         public float CeresTime { get; set; }
         public DateTime? DateSubmitted { get; set; }

@@ -14,6 +14,8 @@ CREATE TABLE `tblRecordDeletionLog` (
 	`RealTimeSeconds` int NOT NULL,
 	`GameTimeSeconds` int,
 	`Comment` varchar(100),
+	`Platform` int NOT NULL DEFAULT 0,
+	`Copy` int NOT NULL DEFAULT 0,
 	`VideoURL` varchar(100),
 	`CeresTime` double,
 	`DateSubmitted` datetime(6),

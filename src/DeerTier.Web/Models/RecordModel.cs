@@ -10,6 +10,8 @@ namespace DeerTier.Web.Models
         public int RealTimeSeconds { get; set; }
         public int GameTimeSeconds { get; set; }
         public string Comment { get; set; }
+        public int Platform { get; set; }
+        public int Copy { get; set; }
         public string VideoURL { get; set; }
         public float CeresTime { get; set; }
         public string FormattedRealTime { get; set; }
@@ -92,6 +94,38 @@ namespace DeerTier.Web.Models
                         return "bronze";
                     default:
                         return null;
+                }
+            }
+        }
+
+        public string PlatformName
+        {
+            get
+            {
+                switch (Platform)
+                {
+                    case 1:
+                        return "Switch";
+                    case 2:
+                        return "Switch 2";
+                    default:
+                        return "Unspecified";
+                }
+            }
+        }
+
+        public string CopyName
+        {
+            get
+            {
+                switch (Copy)
+                {
+                    case 1:
+                        return "Physical";
+                    case 2:
+                        return "Digital";
+                    default:
+                        return "Unspecified";
                 }
             }
         }

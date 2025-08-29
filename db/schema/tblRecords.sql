@@ -14,6 +14,8 @@ CREATE TABLE `tblRecords` (
 	`GameTimeSeconds` int,
 	`GameTimeString` varchar(100),
 	`Comment` varchar(100),
+	`Platform` int NOT NULL DEFAULT 0,
+	`Copy` int NOT NULL DEFAULT 0,
 	`VideoURL` varchar(100),
 	`CeresTime` double,
 	`DateSubmitted` datetime(6),

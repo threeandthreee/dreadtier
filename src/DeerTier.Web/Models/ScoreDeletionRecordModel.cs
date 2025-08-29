@@ -14,6 +14,8 @@ namespace DeerTier.Web.Models
         public int RealTimeSeconds { get; set; }
         public int GameTimeSeconds { get; set; }
         public string Comment { get; set; }
+        public int Platform { get; set; }
+        public int Copy { get; set; }
         public string VideoURL { get; set; }
         public double CeresTime { get; set; }
         public DateTime? DateSubmitted { get; set; }

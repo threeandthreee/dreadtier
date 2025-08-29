@@ -76,6 +76,12 @@
                 <th class="commentColumn nosort">
                     Comment
                 </th>
+                <th class="platformColumn">
+                    Platform
+                </th>
+                <th class="copyColumn">
+                    Copy
+                </th>
                 <th class="dateSubmittedColumn">
                     Date
                 </th>
@@ -122,6 +128,12 @@
                     </td>
                     <td class="comment">
                         @Html.Raw(record.HtmlComment)
+                    </td>
+                    <td class="platform">
+                        @record.PlatformName
+                    </td>
+                    <td class="copy">
+                        @record.CopyName
                     </td>
                     <td data-order="@record.DateSubmittedSortOrder">
                         @record.DateSubmittedAsString

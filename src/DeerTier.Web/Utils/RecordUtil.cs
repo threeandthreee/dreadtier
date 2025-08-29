@@ -5,7 +5,7 @@ namespace DeerTier.Web.Utils
 {
     public class RecordUtil
     {
-        public static Record CreateRecord(Category category, string player, string gameTime, string escapeGameTime, string realTime, string videoLink, string comment, int submittedByUserId)
+        public static Record CreateRecord(Category category, string player, string gameTime, string escapeGameTime, string realTime, string videoLink, string comment, int platform, int copy, int submittedByUserId)
         {
             var record = new Record
             {
@@ -13,6 +13,8 @@ namespace DeerTier.Web.Utils
                 Player = player,
                 VideoURL = videoLink ?? "",
                 Comment = comment ?? "",
+                Platform = platform ?? 0,
+                Copy = copy ?? 0,
                 DateSubmitted = DateTime.Now,
                 SubmittedByUserId = submittedByUserId
             };

@@ -26,8 +26,8 @@ namespace DeerTier.Web.Data
                     conn.Delete(record, s => s.AttachToTransaction(trans));
                     
                     conn.Execute(@"
-                        INSERT INTO tblRecordDeletionLog (Moderator, CategoryId, DeletionDate, Player, RealTimeString, GameTimeString, RealTimeSeconds, GameTimeSeconds, Comment, VideoURL, CeresTime, DateSubmitted, SubmittedByUserId, IPAddress)
-                        VALUES (@Moderator, @CategoryId, NOW(), @Player, @RealTimeString, @GameTimeString, @RealTimeSeconds, @GameTimeSeconds, @Comment, @VideoURL, @CeresTime, @DateSubmitted, @SubmittedByUserId, @IPAddress);", 
+                        INSERT INTO tblRecordDeletionLog (Moderator, CategoryId, DeletionDate, Player, RealTimeString, GameTimeString, RealTimeSeconds, GameTimeSeconds, Comment, Platform, Copy, VideoURL, CeresTime, DateSubmitted, SubmittedByUserId, IPAddress)
+                        VALUES (@Moderator, @CategoryId, NOW(), @Player, @RealTimeString, @GameTimeString, @RealTimeSeconds, @GameTimeSeconds, @Comment, @Platform, @Copy, @VideoURL, @CeresTime, @DateSubmitted, @SubmittedByUserId, @IPAddress);", 
                         new
                         {
                             Moderator = moderator,
@@ -38,6 +38,8 @@ namespace DeerTier.Web.Data
                             RealTimeSeconds = record.RealTimeSeconds,
                             GameTimeSeconds = record.GameTimeSeconds,
                             Comment = record.Comment,
+                            Platform = record.Platform,
+                            Copy = record.Copy,
                             VideoURL = record.VideoURL,
                             CeresTime = record.CeresTime,
                             DateSubmitted = record.DateSubmitted,

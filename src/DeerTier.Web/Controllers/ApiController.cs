@@ -85,13 +85,15 @@ namespace DeerTier.Web.Controllers
                 EscapeGameTime = formattedEscapeGameTime,
                 VideoUrl = record.VideoURL,
                 Comment = record.Comment,
+                Platform = record.Platform,
+                Copy = record.Copy,
                 DateSubmitted = record.DateSubmitted
             };
         }
         
         [HttpPost]
         [ApiAuthorize]
-        public ActionResult SubmitRecord(string username, string category, string realTime, string gameTime, string escapeGameTime, string videoUrl, string comment)
+        public ActionResult SubmitRecord(string username, string category, string realTime, string gameTime, string escapeGameTime, string videoUrl, string comment, int platform, int copy)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
@@ -116,7 +118,7 @@ namespace DeerTier.Web.Controllers
                 throw new ApiException(HttpStatusCode.BadRequest, "Time required");
             }
 
-            var record = RecordUtil.CreateRecord(categoryObj, username, gameTime, escapeGameTime, realTime, videoUrl, comment, UserId);
+            var record = RecordUtil.CreateRecord(categoryObj, username, gameTime, escapeGameTime, realTime, videoUrl, comment, platform, copy, UserId);
             if (record == null)
             {
                 throw new ApiException(HttpStatusCode.BadRequest, "Invalid time");
@@ -124,7 +126,7 @@ namespace DeerTier.Web.Controllers
             
             _leaderboardService.AddRecord(UserContext, record, true);
             
-            _logger.Debug($"Record submitted: [{category}], [{gameTime}], [{escapeGameTime}], [{realTime}], [{videoUrl}], [{comment}]");
+            _logger.Debug($"Record submitted: [{category}], [{gameTime}], [{escapeGameTime}], [{realTime}], [{videoUrl}], [{comment}], [{platform}], [{copy}]");
 
             var mappedRecord = MapRecord(record);
             return Json(mappedRecord);
