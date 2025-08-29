@@ -491,6 +491,13 @@ input[type=submit]
     margin-bottom: 20px !important;
 }
 
+select.platformSelect,
+select.copySelect
+{
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
 textarea
 {
     width: 180px;
@@ -563,6 +570,12 @@ textarea
 .comment
 {
     text-align: left;
+}
+
+.platformColumn,
+.copyColumn
+{
+    width: 70px !important;
 }
 
 .delete a
