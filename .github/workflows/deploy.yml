@@ -76,6 +76,7 @@ jobs:
         # Copy the built website files
         Safe-Copy "$webProjectPath\bin" "$stagingPath\bin"
         Safe-Copy "$webProjectPath\CSS" "$stagingPath\CSS"
+        Safe-Copy "$webProjectPath\Fonts" "$stagingPath\Fonts"
         Safe-Copy "$webProjectPath\Images" "$stagingPath\Images"
         Safe-Copy "$webProjectPath\Scripts" "$stagingPath\Scripts"
         Safe-Copy "$webProjectPath\Views" "$stagingPath\Views"
