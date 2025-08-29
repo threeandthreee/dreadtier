@@ -13,8 +13,8 @@ namespace DeerTier.Web.Utils
                 Player = player,
                 VideoURL = videoLink ?? "",
                 Comment = comment ?? "",
-                Platform = platform ?? 0,
-                Copy = copy ?? 0,
+                Platform = platform,
+                Copy = copy,
                 DateSubmitted = DateTime.Now,
                 SubmittedByUserId = submittedByUserId
             };
