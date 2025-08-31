@@ -16,9 +16,14 @@ body
     background-color: Black;
     margin: 0px 0px 0px 0px;
     min-height: 100%;
-    background-image:url('../Images/emmi_cloud.png');
+    background-image:
+        linear-gradient(to bottom, rgba(0,0,0,0) 90%, black 100%),
+        linear-gradient(to left, rgba(0,0,0,0) 90%, black 100%),
+        linear-gradient(to right, rgba(0,0,0,0) 90%, black 100%),
+        url('../Images/emmi_cloud.png');
     background-size: 2560px auto;
-    background-position: center 0;
+    background-position: top center;
+    background-repeat: no-repeat;
 }
 
 #page
