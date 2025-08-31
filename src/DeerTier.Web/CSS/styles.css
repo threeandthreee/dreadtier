@@ -16,7 +16,8 @@ body
     background-color: Black;
     margin: 0px 0px 0px 0px;
     min-height: 100%;
-    background-image:url('../Images/purple_stars2.jpg');
+    background-image:url('../Images/emmi_cloud.png');
+    background-size: 2560px auto;
     background-position: center 0;
 }
 
@@ -208,18 +209,13 @@ a:hover
 
 #headerContainer
 {
-    padding-top: 50px;
-    padding-bottom: 35px;
-    background-image:url('../Images/logo.png');
-    background-repeat: no-repeat;
-    background-position: center 23px;
+    padding-top: 80px;
+    padding-bottom: 50px;
 }
 
 #header
 {
     color: #EEEFF7;
-    background-image:url('../Images/subtle_carbon2.png');
-    filter: hue-rotate(90deg);
     height: 120px;
 }
 
